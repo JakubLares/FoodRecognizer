@@ -31,14 +31,20 @@ class ViewController: UIViewController {
             fatalError("Loading CoreML Model failed.")
         }
 
-        let request = VNCoreMLRequest(model: model) { (request, error) in
+        let request = VNCoreMLRequest(model: model) { [weak self] request, error in
             if let error = error {
                 fatalError(error.localizedDescription)
             }
             guard let results = request.results as? [VNClassificationObservation] else  {
                 fatalError("Model failed to process image")
             }
-            print(results)
+
+            if let firstResults = results.first,
+                firstResults.identifier.contains("hotdog") {
+                self?.title = "HotDog!"
+            } else {
+                self?.title = "Not HotDog!"
+            }
         }
 
         let handler = VNImageRequestHandler(ciImage: image)
