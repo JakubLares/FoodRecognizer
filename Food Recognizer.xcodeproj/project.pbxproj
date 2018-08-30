@@ -13,6 +13,7 @@
 		E321F1A12136BEC8003AB693 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = E321F1A02136BEC8003AB693 /* Assets.xcassets */; };
 		E321F1A42136BEC8003AB693 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = E321F1A22136BEC8003AB693 /* LaunchScreen.storyboard */; };
 		E321F1AC2136BF6D003AB693 /* Inceptionv3.mlmodel in Sources */ = {isa = PBXBuildFile; fileRef = E321F1AB2136BF6D003AB693 /* Inceptionv3.mlmodel */; };
+		E321F1AE2137E75F003AB693 /* UIViewController+PresentError.swift in Sources */ = {isa = PBXBuildFile; fileRef = E321F1AD2137E75F003AB693 /* UIViewController+PresentError.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -24,6 +25,7 @@
 		E321F1A32136BEC8003AB693 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		E321F1A52136BEC8003AB693 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		E321F1AB2136BF6D003AB693 /* Inceptionv3.mlmodel */ = {isa = PBXFileReference; lastKnownFileType = file.mlmodel; path = Inceptionv3.mlmodel; sourceTree = "<group>"; };
+		E321F1AD2137E75F003AB693 /* UIViewController+PresentError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIViewController+PresentError.swift"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -63,6 +65,7 @@
 				E321F1A22136BEC8003AB693 /* LaunchScreen.storyboard */,
 				E321F1A52136BEC8003AB693 /* Info.plist */,
 				E321F1AB2136BF6D003AB693 /* Inceptionv3.mlmodel */,
+				E321F1AD2137E75F003AB693 /* UIViewController+PresentError.swift */,
 			);
 			path = "Food Recognizer";
 			sourceTree = "<group>";
@@ -141,6 +144,7 @@
 				E321F19C2136BEC6003AB693 /* ViewController.swift in Sources */,
 				E321F1AC2136BF6D003AB693 /* Inceptionv3.mlmodel in Sources */,
 				E321F19A2136BEC6003AB693 /* AppDelegate.swift in Sources */,
+				E321F1AE2137E75F003AB693 /* UIViewController+PresentError.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

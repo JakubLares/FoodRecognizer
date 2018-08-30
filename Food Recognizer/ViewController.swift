@@ -12,9 +12,9 @@ import Vision
 
 class ViewController: UIViewController {
 
-    @IBOutlet weak var imageView: UIImageView!
+    @IBOutlet private weak var imageView: UIImageView!
 
-    let imagePicker: UIImagePickerController = {
+    private let imagePicker: UIImagePickerController = {
         let imagePicker = UIImagePickerController()
         imagePicker.sourceType = .camera
         imagePicker.allowsEditing = true
@@ -26,33 +26,39 @@ class ViewController: UIViewController {
         imagePicker.delegate = self
     }
 
-    func detect(image: CIImage) {
+    private func detect(image: CIImage) {
         guard let model = try? VNCoreMLModel(for: Inceptionv3().model) else {
-            fatalError("Loading CoreML Model failed.")
+            presentError("Loading CoreML Model failed")
+            return
         }
 
         let request = VNCoreMLRequest(model: model) { [weak self] request, error in
-            if let error = error {
-                fatalError(error.localizedDescription)
-            }
-            guard let results = request.results as? [VNClassificationObservation] else  {
-                fatalError("Model failed to process image")
-            }
-
-            if let firstResults = results.first,
-                firstResults.identifier.contains("hotdog") {
-                self?.title = "HotDog!"
-            } else {
-                self?.title = "Not HotDog!"
-            }
+            self?.processRequest(request, error)
         }
 
         let handler = VNImageRequestHandler(ciImage: image)
-
         do {
             try handler.perform([request])
         } catch {
-            print(error)
+            presentError(error.localizedDescription)
+        }
+    }
+
+    private func processRequest(_ request: VNRequest, _ error: Error?) {
+        if let error = error {
+            presentError(error.localizedDescription)
+            return
+        }
+        guard let results = request.results as? [VNClassificationObservation] else  {
+            presentError("Model failed to process image")
+            return
+        }
+
+        if let firstResults = results.first,
+            firstResults.identifier.contains("hotdog") {
+            title = "HotDog!"
+        } else {
+            title = "Not HotDog!"
         }
     }
 
@@ -67,7 +73,8 @@ extension ViewController: UIImagePickerControllerDelegate {
         imagePicker.dismiss(animated: true, completion: nil)
         guard let userPickedImage = info[UIImagePickerControllerOriginalImage] as? UIImage,
             let ciImage = CIImage(image: userPickedImage) else {
-                fatalError("Image is not picked or could not convert UIImage into CIImage")
+                presentError("Image is not picked or could not convert UIImage into CIImage")
+                return
         }
         
         detect(image: ciImage)
@@ -76,5 +83,4 @@ extension ViewController: UIImagePickerControllerDelegate {
 }
 
 extension ViewController: UINavigationControllerDelegate {
-
 }
