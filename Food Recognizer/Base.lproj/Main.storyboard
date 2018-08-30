@@ -18,28 +18,51 @@
                         <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <imageView userInteractionEnabled="NO" contentMode="scaleAspectFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="uJA-zb-QwJ">
-                                <rect key="frame" x="0.0" y="64" width="375" height="603"/>
+                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="laT-cd-DlI">
+                                <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
+                                <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                            </view>
+                            <imageView hidden="YES" userInteractionEnabled="NO" contentMode="scaleAspectFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="GlH-kY-yAY">
+                                <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
+                            </imageView>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Wy6-fM-jk2">
+                                <rect key="frame" x="142" y="561" width="90" height="90"/>
+                                <constraints>
+                                    <constraint firstAttribute="width" constant="90" id="0gz-zI-5xE"/>
+                                    <constraint firstAttribute="height" constant="90" id="63C-pe-Gep"/>
+                                </constraints>
+                                <state key="normal" image="cameraButton"/>
+                                <connections>
+                                    <action selector="actionButtoTapped" destination="BYZ-38-t0r" eventType="touchUpInside" id="zp5-vC-ip7"/>
+                                </connections>
+                            </button>
+                            <imageView hidden="YES" userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="hotDog" translatesAutoresizingMaskIntoConstraints="NO" id="AVF-GX-v3T">
+                                <rect key="frame" x="145.5" y="219.5" width="83" height="78"/>
                             </imageView>
                         </subviews>
                         <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                         <constraints>
-                            <constraint firstItem="6Tk-OE-BBY" firstAttribute="trailing" secondItem="uJA-zb-QwJ" secondAttribute="trailing" id="CMB-bZ-wfA"/>
-                            <constraint firstItem="uJA-zb-QwJ" firstAttribute="leading" secondItem="6Tk-OE-BBY" secondAttribute="leading" id="EEJ-eH-JFW"/>
-                            <constraint firstItem="uJA-zb-QwJ" firstAttribute="top" secondItem="6Tk-OE-BBY" secondAttribute="top" id="J3D-wS-c9B"/>
-                            <constraint firstAttribute="bottom" secondItem="uJA-zb-QwJ" secondAttribute="bottom" id="t6M-dN-XvX"/>
+                            <constraint firstItem="laT-cd-DlI" firstAttribute="top" secondItem="8bC-Xf-vdC" secondAttribute="top" id="0db-lc-dSn"/>
+                            <constraint firstItem="AVF-GX-v3T" firstAttribute="centerX" secondItem="8bC-Xf-vdC" secondAttribute="centerX" id="463-tv-ZTe"/>
+                            <constraint firstItem="AVF-GX-v3T" firstAttribute="centerY" secondItem="8bC-Xf-vdC" secondAttribute="centerY" constant="-75" id="QnP-3s-ODj"/>
+                            <constraint firstItem="GlH-kY-yAY" firstAttribute="trailing" secondItem="6Tk-OE-BBY" secondAttribute="trailing" id="Qsr-As-JoZ"/>
+                            <constraint firstItem="Wy6-fM-jk2" firstAttribute="centerX" secondItem="8bC-Xf-vdC" secondAttribute="centerX" id="WxS-vL-NxF"/>
+                            <constraint firstItem="laT-cd-DlI" firstAttribute="leading" secondItem="6Tk-OE-BBY" secondAttribute="leading" id="akU-Ez-keL"/>
+                            <constraint firstItem="6Tk-OE-BBY" firstAttribute="trailing" secondItem="laT-cd-DlI" secondAttribute="trailing" id="f4T-CH-3S2"/>
+                            <constraint firstItem="GlH-kY-yAY" firstAttribute="leading" secondItem="6Tk-OE-BBY" secondAttribute="leading" id="hwD-de-7UT"/>
+                            <constraint firstAttribute="bottom" secondItem="laT-cd-DlI" secondAttribute="bottom" id="peL-IT-5xC"/>
+                            <constraint firstAttribute="bottom" secondItem="GlH-kY-yAY" secondAttribute="bottom" id="snq-18-anp"/>
+                            <constraint firstItem="GlH-kY-yAY" firstAttribute="top" secondItem="8bC-Xf-vdC" secondAttribute="top" id="ueH-ou-K3r"/>
+                            <constraint firstItem="6Tk-OE-BBY" firstAttribute="bottom" secondItem="Wy6-fM-jk2" secondAttribute="bottom" constant="16" id="w1e-qm-XJs"/>
                         </constraints>
                         <viewLayoutGuide key="safeArea" id="6Tk-OE-BBY"/>
                     </view>
-                    <navigationItem key="navigationItem" id="VgP-SV-2eL">
-                        <barButtonItem key="rightBarButtonItem" systemItem="camera" id="oU5-Eq-D30">
-                            <connections>
-                                <action selector="cameraTapped" destination="BYZ-38-t0r" id="z0E-FO-AGd"/>
-                            </connections>
-                        </barButtonItem>
-                    </navigationItem>
+                    <navigationItem key="navigationItem" id="VgP-SV-2eL"/>
                     <connections>
-                        <outlet property="imageView" destination="uJA-zb-QwJ" id="0OB-lB-FkQ"/>
+                        <outlet property="actionButton" destination="Wy6-fM-jk2" id="COO-HA-ggq"/>
+                        <outlet property="cameraView" destination="laT-cd-DlI" id="MMU-ga-A7Z"/>
+                        <outlet property="hotDogImageView" destination="AVF-GX-v3T" id="rnL-yZ-coB"/>
+                        <outlet property="imageView" destination="GlH-kY-yAY" id="eI1-OX-ybp"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="dkx-z0-nzr" sceneMemberID="firstResponder"/>
@@ -65,4 +88,8 @@
             <point key="canvasLocation" x="258" y="134"/>
         </scene>
     </scenes>
+    <resources>
+        <image name="cameraButton" width="134" height="134"/>
+        <image name="hotDog" width="83" height="78"/>
+    </resources>
 </document>

@@ -9,21 +9,58 @@
 import UIKit
 import CoreML
 import Vision
+import AVFoundation
 
 class ViewController: UIViewController {
 
-    @IBOutlet private weak var imageView: UIImageView!
+    @IBOutlet weak var cameraView: UIView!
+    @IBOutlet weak var imageView: UIImageView!
+    @IBOutlet weak var actionButton: UIButton!
+    @IBOutlet weak var hotDogImageView: UIImageView!
 
-    private let imagePicker: UIImagePickerController = {
-        let imagePicker = UIImagePickerController()
-        imagePicker.sourceType = .camera
-        imagePicker.allowsEditing = true
-        return imagePicker
+    lazy var captureSession: AVCaptureSession = {
+        let captureSession = AVCaptureSession()
+        captureSession.sessionPreset = .hd1920x1080
+        return captureSession
     }()
+
+    let imageOutput = AVCapturePhotoOutput()
+    let sessionOutput = AVCapturePhotoOutput()
+    var previewLayer: AVCaptureVideoPreviewLayer?
+    var capturing = true
 
     override func viewDidLoad() {
         super.viewDidLoad()
-        imagePicker.delegate = self
+        navigationController?.setNavigationBarHidden(true, animated: false)
+        setupCaptureSession()
+    }
+
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+        previewLayer?.frame = cameraView.bounds
+    }
+
+    private func setupCaptureSession() {
+        guard let backCamera = AVCaptureDevice.default(for: .video),
+            let input = try? AVCaptureDeviceInput(device: backCamera) else  {
+                presentError("Camera setup failed")
+                return
+        }
+
+        captureSession.addInput(input)
+        if captureSession.canAddOutput(imageOutput) {
+            captureSession.addOutput(imageOutput)
+            setupPreviewLayer()
+            captureSession.startRunning()
+        }
+    }
+
+    private func setupPreviewLayer() {
+        previewLayer = AVCaptureVideoPreviewLayer(session: captureSession)
+        guard let previewLayer = previewLayer else { return }
+        previewLayer.videoGravity = .resizeAspectFill
+        previewLayer.connection?.videoOrientation = .portrait
+        cameraView.layer.addSublayer(previewLayer)
     }
 
     private func detect(image: CIImage) {
@@ -54,33 +91,69 @@ class ViewController: UIViewController {
             return
         }
 
+        hotDogImageView.isHidden = false
         if let firstResults = results.first,
             firstResults.identifier.contains("hotdog") {
-            title = "HotDog!"
+            hotDogImageView.image = #imageLiteral(resourceName: "hotDog")
+            animageHotDogImageView()
         } else {
-            title = "Not HotDog!"
+            hotDogImageView.image = #imageLiteral(resourceName: "notHotDog")
+            animageHotDogImageView()
+        }
+        actionButton.isEnabled = true
+    }
+
+    private func setupForCapturing(_ capturing: Bool, image: CGImage? = nil) {
+        switch capturing {
+        case true:
+            self.capturing = true
+            actionButton.setImage(#imageLiteral(resourceName: "cameraButton"), for: .normal)
+            imageView.isHidden = true
+            hotDogImageView.isHidden = true
+        case false:
+            self.capturing = false
+            imageView.isHidden = false
+            actionButton.setImage(#imageLiteral(resourceName: "refreshButton"), for: .normal)
+            if let image = image {
+                imageView.image = UIImage(cgImage: image, scale: 1, orientation: .right)
+            }
         }
     }
 
-    @IBAction func cameraTapped() {
-        present(imagePicker, animated: true, completion: nil)
+    private func animageHotDogImageView() {
+        UIView.animate(withDuration: 0.2, animations: { [weak self] in
+            guard let strongSelf = self else { return }
+            strongSelf.hotDogImageView.transform = strongSelf.hotDogImageView.transform.scaledBy(x: 2, y: 2)
+        }) { _ in
+            UIView.animate(withDuration: 0.2) { [weak self] in
+                guard let strongSelf = self else { return }
+                strongSelf.hotDogImageView.transform = strongSelf.hotDogImageView.transform.scaledBy(x: 0.5, y: 0.5)
+            }
+        }
+    }
+
+    @IBAction func actionButtoTapped() {
+        if capturing {
+            imageOutput.capturePhoto(with: .init(), delegate: self)
+            actionButton.isEnabled = false
+        } else {
+            setupForCapturing(true)
+        }
     }
 }
 
-extension ViewController: UIImagePickerControllerDelegate {
+extension ViewController: AVCapturePhotoCaptureDelegate {
 
-    func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [String : Any]) {
-        imagePicker.dismiss(animated: true, completion: nil)
-        guard let userPickedImage = info[UIImagePickerControllerOriginalImage] as? UIImage,
-            let ciImage = CIImage(image: userPickedImage) else {
-                presentError("Image is not picked or could not convert UIImage into CIImage")
+    func photoOutput(_ output: AVCapturePhotoOutput, didFinishProcessingPhoto photo: AVCapturePhoto, error: Error?) {
+        actionButton.isEnabled = true
+        guard let imageData = photo.fileDataRepresentation(),
+            let uiImage = UIImage(data: imageData),
+            let cgImage = uiImage.cgImage else {
+                presentError("Error while generating image from photo capture data.")
+                actionButton.isEnabled = true
                 return
         }
-        
-        detect(image: ciImage)
-        imageView.image = userPickedImage
+        setupForCapturing(false, image: cgImage)
+        detect(image: CIImage(cgImage: cgImage))
     }
-}
-
-extension ViewController: UINavigationControllerDelegate {
 }
