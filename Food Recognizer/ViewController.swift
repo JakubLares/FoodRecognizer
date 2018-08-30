@@ -26,17 +26,46 @@ class ViewController: UIViewController {
         imagePicker.delegate = self
     }
 
+    func detect(image: CIImage) {
+        guard let model = try? VNCoreMLModel(for: Inceptionv3().model) else {
+            fatalError("Loading CoreML Model failed.")
+        }
+
+        let request = VNCoreMLRequest(model: model) { (request, error) in
+            if let error = error {
+                fatalError(error.localizedDescription)
+            }
+            guard let results = request.results as? [VNClassificationObservation] else  {
+                fatalError("Model failed to process image")
+            }
+            print(results)
+        }
+
+        let handler = VNImageRequestHandler(ciImage: image)
+
+        do {
+            try handler.perform([request])
+        } catch {
+            print(error)
+        }
+    }
+
     @IBAction func cameraTapped() {
         present(imagePicker, animated: true, completion: nil)
     }
-
 }
 
 extension ViewController: UIImagePickerControllerDelegate {
 
     func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [String : Any]) {
-        imageView.image = info[UIImagePickerControllerOriginalImage] as? UIImage
         imagePicker.dismiss(animated: true, completion: nil)
+        guard let userPickedImage = info[UIImagePickerControllerOriginalImage] as? UIImage,
+            let ciImage = CIImage(image: userPickedImage) else {
+                fatalError("Image is not picked or could not convert UIImage into CIImage")
+        }
+        
+        detect(image: ciImage)
+        imageView.image = userPickedImage
     }
 }
 
